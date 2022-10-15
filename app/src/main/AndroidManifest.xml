@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.beckytech.saayinsiiwaliigalaakutaa8ffaa">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,10 +14,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SaayinsiiWaliigalaaKutaa8ffaa"
+        android:hardwareAccelerated="true"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+        <activity android:name=".activity.BooKDetailActivity"
+            android:hardwareAccelerated="true"/>
+        <activity android:name=".activity.AboutActivity"
+            android:hardwareAccelerated="true"/>
+        <activity android:name=".MainActivity"
+            android:hardwareAccelerated="true"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,6 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8504401574247581~3312840967"/>
     </application>
 
 </manifest>
