@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1072785894762",
+    "project_id": "saayinsii-waliigalaa-k-8ffaa",
+    "storage_bucket": "saayinsii-waliigalaa-k-8ffaa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072785894762:android:448c5ca0a2eaca0b74c913",
+        "android_client_info": {
+          "package_name": "com.beckytech.saayinsiiwaliigalaakutaa8ffaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072785894762-5gsejh3kmav0a5g81qinossl8l879imp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcSjIVWkWBd5s2TQPrGO4lrldRSbROeyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072785894762-5gsejh3kmav0a5g81qinossl8l879imp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
