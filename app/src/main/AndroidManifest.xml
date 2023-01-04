@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
 
-        <activity android:name=".activity.BooKDetailActivity"
+        <activity android:name=".activity.BookDetailActivity"
             android:hardwareAccelerated="true"/>
         <activity android:name=".activity.AboutActivity"
             android:hardwareAccelerated="true"/>

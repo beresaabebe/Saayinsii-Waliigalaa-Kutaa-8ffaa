@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_weight="100"
     android:background="@color/white"
-    tools:context=".activity.BooKDetailActivity"
+    tools:context=".activity.BookDetailActivity"
     android:orientation="vertical">
 
     <RelativeLayout
