@@ -19,22 +19,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.AboutActivity;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.BookDetailActivity;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.Adapter;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.MoreAppsAdapter;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentEndPage;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentStartPage;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppImages;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppUrl;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppsName;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.SubTitleContents;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.TitleContents;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.Model;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.MoreAppsModel;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.AppRate;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.*;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.*;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.*;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.*;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
@@ -46,7 +37,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Adapter.OnItemClickedListener, MoreAppsAdapter.MoreAppsClicked {
+public class MainActivity extends AppCompatActivity implements MoreAppsAdapter.MoreAppsClicked, Adapter.OnItemClickedListener {
     private InterstitialAd mInterstitialAd;
     private DrawerLayout drawerLayout;
     private List<Model> modelList;
@@ -71,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         });
 
         setAds();
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -110,11 +105,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
             modelList.add(new Model(titleContents.title[j].substring(0, 1).toUpperCase() + "" +
                     titleContents.title[j].substring(1).toLowerCase(),
                     subTitleContents.subTitle[j],
-                    R.drawable.saay8,
+                    R.drawable.icon,
                     startPage.pageStart[j],
                     endPage.pageEnd[j]));
         }
-        Toast.makeText(this, "List of array size " + modelList.size(), Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -262,6 +256,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
     }
 
     @Override
+    public void appClicked(MoreAppsModel model) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(model.getUrl()));
+        startActivity(intent);
+    }
+
+    @Override
     public void onItemClicked(Model model) {
         int rand = (int) (Math.random() * 100);
         if (rand % 8 == 0) {
@@ -297,12 +298,5 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         } else {
             startActivity(new Intent(this, BookDetailActivity.class).putExtra("data", model));
         }
-    }
-
-    @Override
-    public void appClicked(MoreAppsModel model) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(model.getUrl()));
-        startActivity(intent);
     }
 }

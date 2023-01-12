@@ -20,4 +20,7 @@
     <string name="kitaaba_kutaa_5ffaa">Kitaaba Kutaa 5ffaa</string>
     <string name="downloads">Download more apps</string>
     <string name="dowload">Download Now</string>
+    <string name="download_now">Download now</string>
+    <string name="download_more_apps">Download more apps</string>
+    <string name="contact">Contact</string>
 </resources>
