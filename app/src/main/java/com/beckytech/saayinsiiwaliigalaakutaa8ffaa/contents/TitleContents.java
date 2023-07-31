@@ -2,12 +2,12 @@ package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents;
 
 public class TitleContents {
     public String[] title = {
-            "BU’UURAALEE QORANNAA SAAYINSAAWAA",
-            "QABIYYEEFI CAASAA MAATARII",
-            "KOMPAAWUNDOOTA RAMADUU",
-            "SIRNOOTA QAAMAA NAMAAFI FAYYAA",
-            "SIRNAKKOOFI KUNUUNSA QABEENYA UUMAMAA",
-            "SIRNA SOOLAARII",
-            "TA’IIWWAN UUMAMAA"
+            "Bu’uuraalee Qorannaa Saayinsaawaa",
+            "Qabiyyeefi Caasaa Maatarii",
+            "Kompaawundoota Ramaduu",
+            "Sirnoota Qaamaa Namaafi Fayyaa",
+            "Sirnakkoofi Kunuunsa Qabeenya Uumamaa",
+            "Sirna Soolaarii",
+            "Ta’iiwwan Uumamaa"
     };
 }

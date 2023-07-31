@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,8 +35,19 @@ public class BookDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_detail);
 
         callAds();
+        allContents();
+    }
 
+    private void allContents() {
         findViewById(R.id.back_book_detail).setOnClickListener(v -> onBackPressed());
+        ImageButton share_img_btn = findViewById(R.id.share_img_btn);
+        share_img_btn.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_SEND).setType("text/plain");
+            String url = "https://play.google.com/store/apps/details?id="+getPackageName();
+            intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.app_name));
+            intent.putExtra(Intent.EXTRA_TEXT,"Sharing is caring! \n"+url);
+            startActivity(Intent.createChooser(intent, "Share via"));
+        });
 
         Intent intent = getIntent();
         Model model = (Model) intent.getSerializableExtra("data");
@@ -43,6 +55,7 @@ public class BookDetailActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.title_book_detail);
         title.setSelected(true);
         title.setText(model.getTitle());
+        title.setSelected(true);
 
         TextView subTitle = findViewById(R.id.subTitle_book_detail);
         subTitle.setSelected(true);
@@ -75,6 +88,7 @@ public class BookDetailActivity extends AppCompatActivity {
                 .scrollHandle(new DefaultScrollHandle(this))
                 .load();
     }
+
     private void callAds() {
         AudienceNetworkAds.initialize(this);
 //        513372960928869_513374324262066

@@ -12,6 +12,10 @@
         android:title="@string/about_us"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/privacy_action"
+        android:icon="@drawable/baseline_privacy_tip_24"
+        android:title="@string/privacy_title"/>
+
     <item
         android:id="@+id/action_update"
         android:icon="@drawable/ic_baseline_update_24"

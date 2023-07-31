@@ -3,7 +3,6 @@ package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +33,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MainViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
         Model model = modelList.get(position);
-        holder.imageView.setImageResource(model.getImage());
         holder.title.setText(model.getTitle());
         holder.subTitle.setText(model.getSubtitle());
         holder.itemView.setOnClickListener(v -> itemClickedListener.onItemClicked(model));
@@ -50,12 +48,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MainViewHolder> {
     }
 
     public static class MainViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
         TextView title, subTitle;
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.images_main_item);
-            title = itemView.findViewById(R.id.title_main_item);
+            title = itemView.findViewById(R.id.title_chapter);
             subTitle = itemView.findViewById(R.id.subTitle);
         }
     }

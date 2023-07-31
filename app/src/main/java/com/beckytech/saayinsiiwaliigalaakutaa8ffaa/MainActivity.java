@@ -3,34 +3,35 @@ package com.beckytech.saayinsiiwaliigalaakutaa8ffaa;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.AboutActivity;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.BookDetailActivity;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.MoreAppsActivity;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity.PrivacyActivity;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.Adapter;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.MoreAppsAdapter;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentEndPage;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentStartPage;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppImages;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppUrl;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppsName;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.SubTitleContents;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.TitleContents;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.Model;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.MoreAppsModel;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
 import com.facebook.ads.AdSize;
@@ -44,35 +45,41 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Adapter.OnItemClickedListener, MoreAppsAdapter.MoreAppsClicked {
+public class MainActivity extends AppCompatActivity implements Adapter.OnItemClickedListener{
     InterstitialAd interstitialAd;
     String TAG = MainActivity.class.getSimpleName();
-    private final MoreAppImages images = new MoreAppImages();
-    private final MoreAppUrl url = new MoreAppUrl();
-    private final MoreAppsName appsName = new MoreAppsName();
-    private List<MoreAppsModel> moreAppsModelList;
     private List<Model> modelList;
     private final TitleContents titleContents = new TitleContents();
     private final SubTitleContents subTitleContent = new SubTitleContents();
     private final ContentStartPage startPage = new ContentStartPage();
     private final ContentEndPage endPage = new ContentEndPage();
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_main);
-
         AudienceNetworkAds.initialize(this);
         callAds();
 
         AppRate.app_launched(this);
 
+        ToolbarAndNavigationBar();
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        getData();
+        Adapter adapter = new Adapter(modelList, this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void ToolbarAndNavigationBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name);
         drawerToggle.syncState();
+        drawerToggle.getDrawerArrowDrawable().setColor(Color.WHITE);
         drawerLayout.addDrawerListener(drawerToggle);
 
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -81,45 +88,39 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
             return true;
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_main_item);
-        getData();
-        Adapter adapter = new Adapter(modelList, this);
-        recyclerView.setAdapter(adapter);
+        View view = navigationView.getHeaderView(0);
+        ImageButton back_image_btn = view.findViewById(R.id.back_image_btn);
+        back_image_btn.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.START));
 
-        RecyclerView moreAppsRecyclerView = findViewById(R.id.moreAppsRecycler);
-        getMoreApps();
-        MoreAppsAdapter moreAppsAdapter = new MoreAppsAdapter(moreAppsModelList, this);
-        moreAppsRecyclerView.setAdapter(moreAppsAdapter);
+        ImageButton share_img_btn = view.findViewById(R.id.share_img_btn);
+        share_img_btn.setOnClickListener(v -> {
+            shareBtn();
+        });
     }
 
-    private void getMoreApps() {
-        moreAppsModelList = new ArrayList<>();
-        for (int i = 0; i < appsName.appNames.length; i++) {
-            moreAppsModelList.add(new MoreAppsModel(appsName.appNames[i], url.url[i], images.images[i]));
-        }
+    private void shareBtn() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+        intent.putExtra(Intent.EXTRA_TEXT, "I've been waiting for you to click on this for a long time. Please share it now!\n"+url);
+        startActivity(Intent.createChooser(intent, "Share via"));
     }
 
     private void getData() {
         modelList = new ArrayList<>();
         for (int i =0; i < titleContents.title.length; i++) {
-            modelList.add(new Model(titleContents.title[i].substring(0,1).toUpperCase()+""+titleContents.title[i].substring(1).toLowerCase(),
-                    subTitleContent.subTitle[i].substring(0,1).toUpperCase()+""+subTitleContent.subTitle[i].substring(1),
-                    R.drawable.icon,
-                   startPage.pageStart[i],
-                   endPage.pageEnd[i]));
+            modelList.add(new Model(titleContents.title[i],
+                    subTitleContent.subTitle[i],
+                    startPage.pageStart[i],
+                    endPage.pageEnd[i]));
         }
-    }
-
-    @Override
-    public void appClicked(MoreAppsModel model) {
-        showAdWithDelay();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(model.getUrl()));
-        startActivity(intent);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     void MenuOptions(MenuItem item) {
+        drawerLayout.closeDrawer(GravityCompat.START);
+        if (item.getItemId() == R.id.privacy_action) startActivity(new Intent(this, PrivacyActivity.class));
         if (item.getItemId() == R.id.action_about_us) {
             showAdWithDelay();
             startActivity(new Intent(this, AboutActivity.class));
@@ -133,23 +134,18 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
         if (item.getItemId() == R.id.action_more_apps) {
             showAdWithDelay();
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/dev?id=6669279757479011928")));
+            startActivity(new Intent(this, MoreAppsActivity.class));
         }
 
         if (item.getItemId() == R.id.action_share) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
-            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
-            intent.putExtra(Intent.EXTRA_TEXT, "Download this app from Play store \n" + url);
-            startActivity(Intent.createChooser(intent, "Choose to send"));
+            shareBtn();
+            showAdWithDelay();
         }
 
         if (item.getItemId() == R.id.action_update) {
             showAdWithDelay();
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-            int lastVersion = pref.getInt("lastVersion", 0);
+            int lastVersion = pref.getInt("lastVersion", 5);
             String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
             if (lastVersion < BuildConfig.VERSION_CODE) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
@@ -159,14 +155,14 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
             }
         }
         if (item.getItemId() == R.id.action_exit) {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.MyAlertDialog);
             builder.setTitle("Exit")
                     .setMessage("Do you want to close?")
                     .setPositiveButton("Yes", (dialog, which) -> {
                         System.exit(0);
                         finish();
                     })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                     .setBackground(getResources().getDrawable(R.drawable.nav_header_bg, null))
                     .show();
         }
@@ -250,5 +246,4 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
             interstitialAd.show();
         }, 1000 * 60 * 2); // Show the ad after 15 minutes
     }
-
 }

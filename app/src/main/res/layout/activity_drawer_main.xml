@@ -37,6 +37,7 @@
         android:background="@color/white"
         app:itemTextColor="#757575"
         app:itemIconTint="@color/colorPrimaryDark"
+        android:layout_marginStart="-64dp"
         app:menu="@menu/main_menu"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_layout"
