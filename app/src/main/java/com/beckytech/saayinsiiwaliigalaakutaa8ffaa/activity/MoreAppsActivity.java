@@ -58,7 +58,7 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
         list = new ArrayList<>();
         for (int i = 0; i < title.title.length; i++) {
             list.add(new MoreAppsModel(title.title[i],
-                    "http://play.google.com/store/apps/details?id="+url.url[i],
+                    url.url[i],
                     image.images[i],
                     color.color[i]));
         }
@@ -105,6 +105,11 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
 
     @Override
     public void clickedApp(MoreAppsModel model) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(model.getUrl())));
+        Intent intent = getPackageManager().getLaunchIntentForPackage(model.getUrl());
+        String url = "http://play.google.com/store/apps/details?id=";
+        if (intent == null) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + model.getUrl()));
+        }
+        startActivity(intent);
     }
 }
