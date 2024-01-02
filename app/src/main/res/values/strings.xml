@@ -27,4 +27,6 @@
     <string name="privacy_title">Privacy</string>
     <string name="go_back">Go back</string>
     <string name="share_button">share button</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
 </resources>

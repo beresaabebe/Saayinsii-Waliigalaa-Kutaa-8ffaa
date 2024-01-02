@@ -1,7 +1,7 @@
 package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents;
 
 public class ContentEndPage {
-    public int[] pageEnd = {
+    public static int[] pageEnd = {
             25,
             48,
             90,

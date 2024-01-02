@@ -1,13 +1,13 @@
 package com.beckytech.saayinsiiwaliigalaakutaa8ffaa;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,10 +49,6 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
     InterstitialAd interstitialAd;
     String TAG = MainActivity.class.getSimpleName();
     private List<Model> modelList;
-    private final TitleContents titleContents = new TitleContents();
-    private final SubTitleContents subTitleContent = new SubTitleContents();
-    private final ContentStartPage startPage = new ContentStartPage();
-    private final ContentEndPage endPage = new ContentEndPage();
     private DrawerLayout drawerLayout;
 
     @Override
@@ -109,11 +105,11 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
     private void getData() {
         modelList = new ArrayList<>();
-        for (int i =0; i < titleContents.title.length; i++) {
-            modelList.add(new Model(titleContents.title[i],
-                    subTitleContent.subTitle[i],
-                    startPage.pageStart[i],
-                    endPage.pageEnd[i]));
+        for (int i =0; i < TitleContents.title.length; i++) {
+            modelList.add(new Model(TitleContents.title[i],
+                    SubTitleContents.subTitle[i],
+                    ContentStartPage.pageStart[i],
+                    ContentEndPage.pageEnd[i]));
         }
     }
 
@@ -144,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
         if (item.getItemId() == R.id.action_update) {
             showAdWithDelay();
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-            int lastVersion = pref.getInt("lastVersion", 5);
+            SharedPreferences pref = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+            int lastVersion = pref.getInt("lastVersion", BuildConfig.VERSION_CODE);
             String url = "https://play.google.com/store/apps/details?id=" + getPackageName();
             if (lastVersion < BuildConfig.VERSION_CODE) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));

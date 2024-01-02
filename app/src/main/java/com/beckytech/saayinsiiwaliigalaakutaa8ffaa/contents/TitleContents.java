@@ -1,7 +1,7 @@
 package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents;
 
 public class TitleContents {
-    public String[] title = {
+    public static String[] title = {
             "Bu’uuraalee Qorannaa Saayinsaawaa",
             "Qabiyyeefi Caasaa Maatarii",
             "Kompaawundoota Ramaduu",

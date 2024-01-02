@@ -30,13 +30,12 @@ import java.util.List;
 
 public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapter.OnAppClicked {
 
-    private AdView adView;
-
-    private List<MoreAppsModel> list;
     private final MoreAppsImage image = new MoreAppsImage();
     private final MoreAppTitle title = new MoreAppTitle();
     private final MoreAppUrl url = new MoreAppUrl();
     private final MoreAppsBgColor color = new MoreAppsBgColor();
+    private AdView adView;
+    private List<MoreAppsModel> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +68,13 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
         tv_title.setText(R.string.more_apps_for_grade_8th);
         tv_title.setTextColor(ContextCompat.getColor(this, R.color.white));
         ImageButton back_btn = findViewById(R.id.ib_back);
-        back_btn.setColorFilter(ContextCompat.getColor(this,R.color.white));
-        back_btn.setOnClickListener(view -> onBackPressed());
+        back_btn.setColorFilter(ContextCompat.getColor(this, R.color.white));
+        back_btn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     private void adaptiveAds() {
-        MobileAds.initialize(this, initializationStatus -> {});
+        MobileAds.initialize(this, initializationStatus -> {
+        });
         FrameLayout adContainerView = findViewById(R.id.adView_container);
         //Create an AdView and put it into your FrameLayout
         adView = new AdView(this);
