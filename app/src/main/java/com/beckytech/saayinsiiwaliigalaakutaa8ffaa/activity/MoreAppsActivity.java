@@ -3,10 +3,10 @@ package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.widget.FrameLayout;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +20,19 @@ import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppUrl;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppsBgColor;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.MoreAppsImage;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.MoreAppsModel;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.ads.AudienceNetworkAds;
+import com.facebook.ads.InterstitialAd;
+import com.facebook.ads.InterstitialAdListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapter.OnAppClicked {
 
@@ -34,18 +40,105 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
     private final MoreAppTitle title = new MoreAppTitle();
     private final MoreAppUrl url = new MoreAppUrl();
     private final MoreAppsBgColor color = new MoreAppsBgColor();
-    private AdView adView;
     private List<MoreAppsModel> list;
+    private InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_apps);
-        adaptiveAds();
+
         toolBar();
         recyclerView();
+        facebookAds();
     }
 
+    private void facebookAds() {
+        AudienceNetworkAds.initialize(this);
+        Random random = new Random();
+        int rand = random.nextInt(100) + 1;
+        LinearLayout banner_container = findViewById(R.id.banner_container);
+        AdView adView;
+        if (rand % 2 == 0)
+            adView = new AdView(this, getString(R.string.facebook_banner_height_50_more_apps), AdSize.BANNER_HEIGHT_50);
+        else
+            adView = new AdView(this, getString(R.string.facebook_bottom_rectangle_more_apps), AdSize.RECTANGLE_HEIGHT_250);
+
+        banner_container.addView(adView);
+        adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(),"onError");
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(),"onAdLoaded");
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(),"onAdClicked");
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(),"onLoggingImpression");            }
+        }).build());
+
+        LinearLayout banner_container_rectangle = findViewById(R.id.banner_container_rectangle);
+        AdView rectangle = new AdView(this, getString(R.string.facebook_rectangle_upper_more_apps), AdSize.RECTANGLE_HEIGHT_250);
+        banner_container_rectangle.addView(rectangle);
+        rectangle.loadAd();
+
+        interstitialAd = new InterstitialAd(this, getString(R.string.facebook_interstitial_more_apps));
+        interstitialAd.loadAd(interstitialAd.buildLoadAdConfig().withAdListener(new InterstitialAdListener() {
+            @Override
+            public void onInterstitialDisplayed(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onInterstitialDisplayed");
+            }
+
+            @Override
+            public void onInterstitialDismissed(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onInterstitialDismissed");
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onError");
+
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onAdLoaded");
+                interstitialAd.show();
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onAdClicked");
+
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Log.d(MoreAppsActivity.this.getLocalClassName(), "onLoggingImpression");
+            }
+        }).build());
+    }
+    private void showAdWithDelay() {
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            if(interstitialAd == null || !interstitialAd.isAdLoaded()) {
+                return;
+            }
+            if(interstitialAd.isAdInvalidated()) {
+                return;
+            }
+            interstitialAd.show();
+        }, 1000 * 60 * 3);// Show the ad after 15 minutes
+    }
     private void recyclerView() {
         RecyclerView moreRecyclerView = findViewById(R.id.more_app_recyclerView);
         getData();
@@ -72,44 +165,19 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
         back_btn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
     }
 
-    private void adaptiveAds() {
-        MobileAds.initialize(this, initializationStatus -> {
-        });
-        FrameLayout adContainerView = findViewById(R.id.adView_container);
-        //Create an AdView and put it into your FrameLayout
-        adView = new AdView(this);
-        adContainerView.addView(adView);
-        adView.setAdUnitId(getString(R.string.banner_ad_unit_id));
-        loadBanner();
-    }
-
-    public AdSize getAdSize() {
-        Display display = getWindowManager().getDefaultDisplay();
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        display.getMetrics(outMetrics);
-
-        float widthPixels = outMetrics.widthPixels;
-        float density = outMetrics.density;
-        int adWidth = (int) (widthPixels / density);
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth);
-    }
-
-    public void loadBanner() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-        AdSize adSize = getAdSize();
-        // Set the adaptive ad size to the ad view.
-        adView.setAdSize(adSize);
-        // Start loading the ad in the background.
-        adView.loadAd(adRequest);
-    }
-
     @Override
     public void clickedApp(MoreAppsModel model) {
-        Intent intent = getPackageManager().getLaunchIntentForPackage(model.getUrl());
+        String pkg = model.getUrl();
+        Intent intent = getPackageManager().getLaunchIntentForPackage(pkg);
         String url = "http://play.google.com/store/apps/details?id=";
+        String dev = "https://play.google.com/store/apps/dev?id=6669279757479011928";
         if (intent == null) {
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + model.getUrl()));
+            if (Objects.equals(pkg,""))
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(dev));
+            else
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url + model.getUrl()));
         }
+        showAdWithDelay();
         startActivity(intent);
     }
 }

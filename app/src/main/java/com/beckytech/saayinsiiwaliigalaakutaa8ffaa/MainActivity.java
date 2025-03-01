@@ -34,6 +34,7 @@ import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.TitleContents;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.Model;
 import com.facebook.ads.Ad;
 import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
 import com.facebook.ads.AudienceNetworkAds;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_main);
+
         AudienceNetworkAds.initialize(this);
         callAds();
 
@@ -89,9 +91,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         back_image_btn.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.START));
 
         ImageButton share_img_btn = view.findViewById(R.id.share_img_btn);
-        share_img_btn.setOnClickListener(v -> {
-            shareBtn();
-        });
+        share_img_btn.setOnClickListener(v -> shareBtn());
     }
 
     private void shareBtn() {
@@ -171,11 +171,56 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
     }
 
     private void callAds() {
+        LinearLayout banner_container_rectangle = findViewById(R.id.banner_container_rectangle);
+        AdView rectangle = new AdView(this, getString(R.string.facebook_bottom_rectangle_more_apps), AdSize.RECTANGLE_HEIGHT_250);
+        banner_container_rectangle.addView(rectangle);
+        rectangle.loadAd(rectangle.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Log.d(MainActivity.class.getSimpleName(), "onError"+adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onAdLoaded "+ad.getPlacementId());
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onAdClicked "+ad.getPlacementId());
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onLoggingImpression "+ad.getPlacementId());
+            }
+        }).build());
+
 //        513372960928869_513374324262066
         AdView adView = new AdView(this, "840876307206130_840877500539344", AdSize.BANNER_HEIGHT_50);
         LinearLayout adContainer = findViewById(R.id.banner_container);
         adContainer.addView(adView);
-        adView.loadAd();
+        adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                Log.d(MainActivity.class.getSimpleName(), "onError "+adError.getErrorMessage());
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onAdLoaded "+ad.getPlacementId());
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onAdClicked "+ad.getPlacementId());
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                Log.d(MainActivity.class.getSimpleName(), "onLoggingImpression "+ad.getPlacementId());
+            }
+        }).build());
 
         interstitialAd = new InterstitialAd(this, "840876307206130_840877617205999");
         // Create listeners for the Interstitial Ad
@@ -219,8 +264,6 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
             }
         };
 
-        // For auto play video ads, it's recommended to load the ad
-        // at least 30 seconds before it is shown
         interstitialAd.loadAd(
                 interstitialAd.buildLoadAdConfig()
                         .withAdListener(interstitialAdListener)

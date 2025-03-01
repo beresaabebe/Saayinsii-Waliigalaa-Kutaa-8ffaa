@@ -97,7 +97,11 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
     private void callAds() {
         AudienceNetworkAds.initialize(this);
 
-//        513372960928869_513374324262066
+        LinearLayout banner_container_rectangle = findViewById(R.id.banner_container_rectangle);
+        AdView rectangle = new AdView(this, getString(R.string.facebook_rectangle_upper_more_apps), AdSize.RECTANGLE_HEIGHT_250);
+        banner_container_rectangle.addView(rectangle);
+        rectangle.loadAd();
+
         adView = new AdView(this, "840876307206130_840876877206073", AdSize.BANNER_HEIGHT_50);
         LinearLayout adContainer = findViewById(R.id.banner_container);
         adContainer.addView(adView);

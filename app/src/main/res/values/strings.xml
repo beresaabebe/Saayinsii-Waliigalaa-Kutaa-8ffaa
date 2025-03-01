@@ -29,4 +29,8 @@
     <string name="share_button">share button</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+    <string name="facebook_banner_height_50_more_apps">840876307206130_840876877206073</string>
+    <string name="facebook_interstitial_more_apps">840876307206130_840876940539400</string>
+    <string name="facebook_rectangle_upper_more_apps">840876307206130_1273445247282565</string>
+    <string name="facebook_bottom_rectangle_more_apps">840876307206130_1273445860615837</string>
 </resources>

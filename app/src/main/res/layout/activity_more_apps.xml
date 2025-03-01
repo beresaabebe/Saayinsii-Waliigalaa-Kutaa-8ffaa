@@ -50,10 +50,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:id="@+id/banner_container_rectangle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/more_app_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/banner_container_rectangle"
                 android:layoutAnimation="@anim/layout_animation"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
@@ -62,14 +73,16 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 tools:listitem="@layout/more_app_list" />
 
-            <FrameLayout
-                android:id="@+id/adView_container"
-                android:layout_width="wrap_content"
-                android:layout_below="@+id/more_app_recyclerView"
+            <LinearLayout
+                android:id="@+id/banner_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@id/more_app_recyclerView"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </RelativeLayout>
 

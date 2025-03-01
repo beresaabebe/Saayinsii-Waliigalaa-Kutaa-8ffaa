@@ -11,8 +11,9 @@ public class MoreAppsBgColor {
             R.color.herrega,
             R.color.it,
             R.color.lam,
+            R.color.saa,
             R.color.amher,
             R.color.ogart,
-            R.color.saa
+            R.color.colorPrimaryDark
     };
 }

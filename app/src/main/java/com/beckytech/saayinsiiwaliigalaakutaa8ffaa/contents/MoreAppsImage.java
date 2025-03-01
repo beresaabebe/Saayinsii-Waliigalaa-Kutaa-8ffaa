@@ -11,8 +11,9 @@ public class MoreAppsImage {
             R.drawable.her,
             R.drawable.it,
             R.drawable.lam,
+            R.drawable.saay,
             R.drawable.amher,
             R.drawable.ogart,
-            R.drawable.saay
+            R.drawable.ic_baseline_read_more_24
     };
 }

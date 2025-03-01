@@ -9,8 +9,9 @@ public class MoreAppTitle {
             "Herrega Kutaa 8ffaa",
             "Information Technology Grade 8",
             "Lammummaa Kutaa 8ffaa",
+            "Saayinsii Walii galaa Kutaa 8",
             "Maths Grade 8th Amharic",
             "Og-artiiwwan Kutaa 8ffaa",
-            "Saayinsii Walii galaa Kutaa 8"
+            "Get More Apps from Play Store..."
     };
 }
