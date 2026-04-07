@@ -4,55 +4,116 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.R;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.utils.AdManager;
+import com.facebook.ads.AudienceNetworkAds;
 
 public class PrivacyActivity extends AppCompatActivity {
 
-    @SuppressLint("SetJavaScriptEnabled")
+    private WebView webView;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy);
 
-        ImageButton ib_back = findViewById(R.id.ib_back);
-        ib_back.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
-        ProgressBar progressBar = findViewById(R.id.progress_horizontal);
-        progressBar.setVisibility(View.GONE);
+        // Initialize SDK
+        AudienceNetworkAds.initialize(this);
 
+        initUI();
+        setupWebView();
+        setupModernBackNavigation();
+
+        // Use AdManager to respect the "Turn off Ads" timer
+        setupAds();
+
+        webView.loadUrl("https://yoosaad.com/privacy/");
+    }
+
+    private void initUI() {
+        progressBar = findViewById(R.id.progress_horizontal);
         TextView tv_title = findViewById(R.id.tv_title);
-        tv_title.setText(R.string.privacy_title);
+        webView = findViewById(R.id.webView_privacy);
 
-        WebView activity_privacy = findViewById(R.id.webView_privacy);
-        activity_privacy.loadUrl("https://yoosaad.com/beresa-android-website-privacy-policy/");
-        activity_privacy.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        activity_privacy.getSettings().getLoadsImagesAutomatically();
-        activity_privacy.getSettings().setJavaScriptEnabled(true);
-        activity_privacy.setWebViewClient(new WebViewClient(){
+        tv_title.setText(R.string.privacy_title);
+        findViewById(R.id.ib_back).setOnClickListener(v -> finish());
+    }
+
+    private void setupAds() {
+        if (AdManager.getInstance().areAdsEnabled(this)) {
+            // Load Bottom Banner
+            LinearLayout bannerContainer = findViewById(R.id.banner_container);
+            AdManager.getInstance().initBanner(this, bannerContainer, getString(R.string.fb_banner_ads_detail));
+
+            // Load Medium Rectangle
+            LinearLayout rectangleContainer = findViewById(R.id.mrec_container);
+            if (rectangleContainer != null) {
+                AdManager.getInstance().initRectangle(this, rectangleContainer, getString(R.string.facebook_rectangle_upper_more_apps));
+            }
+        } else {
+            // Hide containers if ads are disabled
+            findViewById(R.id.banner_container).setVisibility(View.GONE);
+            View mrec = findViewById(R.id.mrec_container);
+            if (mrec != null) mrec.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupModernBackNavigation() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setupWebView() {
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
                 progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
                 progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                activity_privacy.loadUrl("file:///android_asset/error.html");
-                progressBar.setVisibility(View.GONE);
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame()) {
+                    webView.loadUrl("file:///android_asset/error.html");
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }
+
+    // Ad cleanup is handled inside the AdManager or by the Activity lifecycle
+    // since we aren't holding local references to AdViews here anymore.
 }

@@ -1,9 +1,9 @@
 package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model;
 
 public class MoreAppsModel {
+    private final int color;
     private String appName, url;
     private int appImage;
-    private final int color;
 
     public MoreAppsModel(String appName, String url, int appImage, int color) {
         this.appName = appName;

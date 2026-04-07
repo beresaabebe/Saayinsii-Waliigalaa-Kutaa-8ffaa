@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_turn_off_ads"
+        android:icon="@drawable/ic_baseline_block_24"
+        android:title="Ads Cufi (Pro)" />
+
     <item
         android:id="@+id/action_more_apps"
         android:icon="@drawable/ic_baseline_read_more_24"
@@ -12,26 +18,28 @@
         android:title="@string/about_us"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/privacy_action"
+    <item
+        android:id="@+id/privacy_action"
         android:icon="@drawable/baseline_privacy_tip_24"
-        android:title="@string/privacy_title"/>
+        android:title="@string/privacy_title" />
 
     <item
         android:id="@+id/action_update"
         android:icon="@drawable/ic_baseline_update_24"
-        android:title="@string/update"/>
+        android:title="@string/update" />
+
     <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_baseline_share_24"
-        android:title="@string/share"/>
+        android:title="@string/share" />
 
     <item
         android:id="@+id/action_rate"
         android:icon="@drawable/ic_baseline_star_rate_24"
-        android:title="@string/rate"/>
+        android:title="@string/rate" />
 
     <item
         android:id="@+id/action_exit"
         android:icon="@drawable/ic_baseline_close_24"
-        android:title="@string/exit"/>
+        android:title="@string/exit" />
 </menu>
