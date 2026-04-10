@@ -59,7 +59,6 @@ public class PdfRenderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_PAGE) {
-            // MATH: Subtract the number of ads that appeared before this position
             int adsBefore = (position + 1) / (AD_EVERY_N_PAGES + 1);
             int pdfIndex = startPage + position - adsBefore;
 
@@ -67,20 +66,32 @@ public class PdfRenderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 renderPdfPage((PageViewHolder) holder, pdfIndex);
             }
         } else {
-            ((AdViewHolder) holder).bindAd(activity);
+            AdViewHolder adHolder = (AdViewHolder) holder;
+            // 🛑 CRITICAL: Only load the ad if the container is empty!
+            // This prevents flickering and re-loading during scroll.
+            if (adHolder.container.getChildCount() == 0) {
+                adHolder.container.setVisibility(View.GONE); // Hide until loaded
+                adHolder.bindAd(activity);
+            }
         }
     }
 
     private void renderPdfPage(PageViewHolder holder, int index) {
-        try {
-            PdfRenderer.Page page = renderer.openPage(index);
-            // 2x is best for performance. 3x is too slow/laggy.
-            Bitmap bitmap = Bitmap.createBitmap(page.getWidth() * 2, page.getHeight() * 2, Bitmap.Config.ARGB_8888);
+        // Check if renderer is still valid (crucial for stability)
+        if (renderer == null) return;
+        try (PdfRenderer.Page page = renderer.openPage(index)) {
+            // Use a standard multiplier or calculate based on display metrics
+            int width = page.getWidth() * 2;
+            int height = page.getHeight() * 2;
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-            ((PhotoView) holder.itemView).setImageBitmap(bitmap);
-            page.close();
+
+            PhotoView pv = (PhotoView) holder.itemView;
+            pv.setImageBitmap(bitmap);
         } catch (Exception e) {
-            e.printStackTrace();
+            // Log the error so you can see it in Play Console
+            android.util.Log.e("PDF_RENDER", "Error rendering page " + index, e);
         }
     }
 
@@ -104,7 +115,7 @@ public class PdfRenderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public AdViewHolder(@NonNull View itemView) {
             super(itemView);
-            container = itemView.findViewById(R.id.mrec_ad_layout);
+            container = itemView.findViewById(R.id.mrec_container);
         }
 
         public void bindAd(Activity activity) {

@@ -116,7 +116,7 @@ public class MoreAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public AdHolder(@NonNull View itemView) {
             super(itemView);
-            adContainer = itemView.findViewById(R.id.mrec_ad_layout);
+            adContainer = itemView.findViewById(R.id.mrec_container);
         }
 
         public void bindAd(Context context) {

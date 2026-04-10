@@ -1,5 +1,6 @@
 package com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +27,10 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Model> modelList;
     private final OnItemClickedListener itemClickedListener;
-    private final Context context;
+    private final Activity activity;
 
-    public Adapter(Context context, List<Model> modelList, OnItemClickedListener itemClickedListener) {
-        this.context = context;
+    public Adapter(Activity activity, List<Model> modelList, OnItemClickedListener itemClickedListener) {
+        this.activity = activity;
         this.modelList = modelList;
         this.itemClickedListener = itemClickedListener;
     }
@@ -37,7 +38,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         // If ads are DISABLED by the user, never return TYPE_AD
-        if (!AdManager.getInstance().areAdsEnabled(context)) {
+        if (!AdManager.getInstance().areAdsEnabled(activity)) {
             return TYPE_CHAPTER;
         }
 
@@ -66,7 +67,7 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_AD) {
             AdViewHolder adHolder = (AdViewHolder) holder;
-            adHolder.bindAd();
+            adHolder.bindAd(activity);
         } else {
             // Logic to get the correct chapter index from the list
             int chapterIndex = position - (position / AD_INTERVAL);
@@ -85,8 +86,13 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        if (modelList.isEmpty()) return 0;
-        // Calculation: Original chapters + total possible ads
+        if (modelList == null || modelList.isEmpty()) return 0;
+
+        // If ads are off, just return the list size
+        if (!AdManager.getInstance().areAdsEnabled(activity)) return modelList.size();
+
+        // Standard formula: Original size + (original size / (interval - 1))
+        // If interval is 5, ads are at 4, 9, 14...
         return modelList.size() + (modelList.size() / (AD_INTERVAL - 1));
     }
 
@@ -111,17 +117,21 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public AdViewHolder(@NonNull View itemView) {
             super(itemView);
-            adContainer = itemView.findViewById(R.id.mrec_ad_layout);
+            adContainer = itemView.findViewById(R.id.mrec_container);
         }
 
-        public void bindAd() {
-            adContainer.removeAllViews();
-            // Use a specific placement ID for Main Chapter list if you want to track it separately
-            AdView adView = new AdView(itemView.getContext(),
-                    itemView.getContext().getString(R.string.facebook_rectangle_upper_more_apps),
-                    AdSize.RECTANGLE_HEIGHT_250);
-            adContainer.addView(adView);
-            adView.loadAd();
+        public void bindAd(Activity activity) {
+            // 1. Check if an ad is already there so we don't reload during scroll
+            if (adContainer.getChildCount() == 0) {
+
+                // 2. We use the AdManager to handle the visibility and the load logic
+                // This ensures if ads are disabled, the container stays GONE.
+                AdManager.getInstance().initRectangle(
+                        activity,
+                        adContainer,
+                        itemView.getContext().getString(R.string.facebook_rectangle_upper_more_apps)
+                );
+            }
         }
     }
 }
