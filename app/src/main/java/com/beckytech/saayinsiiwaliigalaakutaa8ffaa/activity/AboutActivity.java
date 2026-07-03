@@ -62,7 +62,7 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
             startActivity(Intent.createChooser(intent, "Share via"));
 
             // Show Interstitial when user interacts
-            AdManager.getInstance().showInterstitial();
+            AdManager.getInstance().showInterstitial(AboutActivity.this);
         });
 
         RecyclerView recyclerView = findViewById(R.id.recycler_about);
@@ -105,7 +105,7 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
         startActivity(intent);
 
         // Show Interstitial when clicking external links
-        AdManager.getInstance().showInterstitial();
+        AdManager.getInstance().showInterstitial(this);
     }
 
     // Note: We don't need onDestroy() ad cleanup here anymore

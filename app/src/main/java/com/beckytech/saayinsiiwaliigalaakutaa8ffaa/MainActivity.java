@@ -53,23 +53,39 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
         // Logic
         AppRate.app_launched(this);
+        checkForUpdate();
 
         // Handle Ads via centralized AdManager
         setupAds();
+    }
+
+    private void checkForUpdate() {
+        com.google.android.play.core.appupdate.AppUpdateManager appUpdateManager = com.google.android.play.core.appupdate.AppUpdateManagerFactory.create(this);
+        com.google.android.gms.tasks.Task<com.google.android.play.core.appupdate.AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE)) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo, com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE, this, 100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setupAds() {
         if (AdManager.getInstance().areAdsEnabled(this)) {
             // 1. Load Banner
             LinearLayout adContainer = findViewById(R.id.banner_container);
-            AdManager.getInstance().initBanner(this, adContainer, getString(R.string.fb_banner_ads_main));
+            AdManager.getInstance().initBanner(this, adContainer, getString(R.string.google_banner_ads_unit_id));
 
             // 2. Load Rectangle
             LinearLayout rectContainer = findViewById(R.id.banner_container_rectangle);
-            AdManager.getInstance().initRectangle(this, rectContainer, getString(R.string.facebook_bottom_rectangle_more_apps));
+            AdManager.getInstance().initRectangle(this, rectContainer, getString(R.string.google_native_ads_unit_id));
 
             // 3. Load Interstitial
-            AdManager.getInstance().loadInterstitial(this, getString(R.string.fb_interstitial_ads_main));
+            AdManager.getInstance().loadInterstitial(this, getString(R.string.google_interstitial_ads_unit_id));
         } else {
             // Hide containers if user recently turned off ads
             findViewById(R.id.banner_container).setVisibility(View.GONE);
@@ -134,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         } else if (id == R.id.action_about_us) {
             startActivity(new Intent(this, AboutActivity.class));
         } else if (id == R.id.action_rate) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+            AppRate.showRateDialog(this, null);
         } else if (id == R.id.action_more_apps) {
             startActivity(new Intent(this, MoreAppsActivity.class));
         } else if (id == R.id.action_share) {
@@ -159,11 +175,14 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
     @Override
     public void onItemClicked(Model model) {
+        // Find index of clicked model
+        int index = modelList.indexOf(model);
+        
         // Show interstitial before navigating to details
-        AdManager.getInstance().showInterstitial();
+        AdManager.getInstance().showInterstitial(this);
 
         Intent intent = new Intent(this, BookDetailActivity.class);
-        intent.putExtra("data", model);
+        intent.putExtra("index", index);
         startActivity(intent);
     }
 

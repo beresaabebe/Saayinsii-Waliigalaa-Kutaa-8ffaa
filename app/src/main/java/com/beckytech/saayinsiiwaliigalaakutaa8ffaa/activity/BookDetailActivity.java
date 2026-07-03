@@ -4,71 +4,95 @@ import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.R;
-import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.adapter.PdfRenderAdapter;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentEndPage;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.ContentStartPage;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.SubTitleContents;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.contents.TitleContents;
+import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.fragments.ChapterFragment;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.model.Model;
 import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.utils.AdManager;
-import com.facebook.ads.AudienceNetworkAds;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookDetailActivity extends AppCompatActivity {
     private PdfRenderer renderer;
     private ParcelFileDescriptor pfd;
+    private ViewPager2 viewPager;
+    private List<Model> chapters;
+    private TextView titleTv, subTitleTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_detail);
+        setContentView(R.layout.activity_book_detail_pager);
 
-        // Initialize Facebook SDK
-        AudienceNetworkAds.initialize(this);
-
-        // 1. Fixed Bottom Banner Management
-        if (AdManager.getInstance().areAdsEnabled(this)) {
-            loadBottomBanner();
-            // Load Interstitial for when they eventually leave or finish a section
-            AdManager.getInstance().loadInterstitial(this, getString(R.string.fb_interstitial_ads_detail));
-        } else {
-            findViewById(R.id.banner_container).setVisibility(View.GONE);
-        }
-
-        Model model = (Model) getIntent().getSerializableExtra("data");
-        if (model == null) return;
-
-        setupToolbar(model);
+        initData();
+        setupToolbar();
         initPdfRenderer();
 
-        // 2. Setup High-Performance PDF List
-        RecyclerView recyclerView = findViewById(R.id.pdfRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        viewPager = findViewById(R.id.viewPager);
+        ChapterPagerAdapter adapter = new ChapterPagerAdapter(this);
+        viewPager.setAdapter(adapter);
 
-        // The adapter handles the in-stream MREC ads internally
-        PdfRenderAdapter adapter = new PdfRenderAdapter(this, renderer, model.getPageStart(), model.getPageEnd());
-        recyclerView.setAdapter(adapter);
+        int startIndex = getIntent().getIntExtra("index", 0);
+        viewPager.setCurrentItem(startIndex, false);
+        updateToolbar(startIndex);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                updateToolbar(position);
+                AdManager.getInstance().showRandomRewardedAd(BookDetailActivity.this);
+            }
+        });
+
+        // Load ads
+        AdManager.getInstance().loadInterstitial(this, getString(R.string.google_interstitial_ads_unit_id));
+        AdManager.getInstance().loadRewardedAd(this);
+        AdManager.getInstance().loadRewardedInterstitialAd(this);
+        
+        loadBottomBanner();
     }
 
     private void loadBottomBanner() {
-        LinearLayout bannerContainer = findViewById(R.id.banner_container);
-        // Use the AdManager helper to keep the code clean
-        AdManager.getInstance().initBanner(this, bannerContainer, getString(R.string.fb_banner_ads_detail));
+        android.widget.LinearLayout bannerContainer = findViewById(R.id.banner_container);
+        AdManager.getInstance().initCollapsibleBanner(this, bannerContainer, getString(R.string.google_banner_ads_unit_id));
     }
 
-    private void setupToolbar(Model model) {
-        TextView title = findViewById(R.id.title_book_detail);
-        TextView subTitle = findViewById(R.id.sub_title_book_detail);
-        title.setText(model.getTitle());
-        subTitle.setText(model.getSubtitle());
+    private void initData() {
+        chapters = new ArrayList<>();
+        for (int i = 0; i < TitleContents.title.length; i++) {
+            chapters.add(new Model(TitleContents.title[i], SubTitleContents.subTitle[i], ContentStartPage.pageStart[i], ContentEndPage.pageEnd[i]));
+        }
+    }
+
+    private void setupToolbar() {
+        titleTv = findViewById(R.id.title_book_detail);
+        subTitleTv = findViewById(R.id.sub_title_book_detail);
         findViewById(R.id.back_book_detail).setOnClickListener(v -> finish());
+    }
+
+    private void updateToolbar(int position) {
+        if (position < chapters.size()) {
+            Model model = chapters.get(position);
+            titleTv.setText(model.getTitle());
+            subTitleTv.setText(model.getSubtitle());
+        }
     }
 
     private void initPdfRenderer() {
@@ -90,6 +114,10 @@ public class BookDetailActivity extends AppCompatActivity {
         }
     }
 
+    public PdfRenderer getRenderer() {
+        return renderer;
+    }
+
     @Override
     protected void onDestroy() {
         try {
@@ -99,5 +127,23 @@ public class BookDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         super.onDestroy();
+    }
+
+    private class ChapterPagerAdapter extends FragmentStateAdapter {
+        public ChapterPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            Model model = chapters.get(position);
+            return ChapterFragment.newInstance(model.getPageStart(), model.getPageEnd());
+        }
+
+        @Override
+        public int getItemCount() {
+            return chapters.size();
+        }
     }
 }

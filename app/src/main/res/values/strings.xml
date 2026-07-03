@@ -12,8 +12,8 @@
     <string name="facebook">Facebook</string>
     <string name="phone">Phone</string>
     <string name="version">Version - </string>
-    <string name="banner_ad_unit_id">ca-app-pub-8504401574247581/1210255957</string>
-    <string name="interstitial_ads_unit_id">ca-app-pub-8504401574247581/9558932534</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8504401574247581/1210255957</string>
+    <string name="interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/9558932534</string>
     <string name="kitaaba_kutaa_8ffaa">Kitaaba Kutaa 8ffaa</string>
     <string name="kitaaba_kutaa_7ffaa">Kitaaba Kutaa 7ffaa</string>
     <string name="kitaaba_gadaa">Kitaaba Gadaa</string>
@@ -30,14 +30,36 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
+    <string name="facebook_app_id" translatable="false">840876307206130</string>
+    <string name="facebook_banner_height_50_more_apps" translatable="false">840876307206130_840876877206073</string>
+    <string name="facebook_interstitial_more_apps" translatable="false">840876307206130_840876940539400</string>
+    <string name="facebook_rectangle_upper_more_apps" translatable="false">840876307206130_1273445247282565</string>
+    <string name="facebook_bottom_rectangle_more_apps" translatable="false">840876307206130_1273445860615837</string>
+    <string name="fb_banner_ads_detail" translatable="false">840876307206130_840877100539384</string>
+    <string name="fb_interstitial_ads_detail" translatable="false">840876307206130_840877297206031</string>
+    <string name="fb_interstitial_ads_main" translatable="false">840876307206130_840877617205999</string>
+    <string name="fb_banner_ads_main" translatable="false">840876307206130_840877500539344</string>
 
-    <string name="facebook_app_id">840876307206130</string>
-    <string name="facebook_banner_height_50_more_apps">840876307206130_840876877206073</string>
-    <string name="facebook_interstitial_more_apps">840876307206130_840876940539400</string>
-    <string name="facebook_rectangle_upper_more_apps">840876307206130_1273445247282565</string>
-    <string name="facebook_bottom_rectangle_more_apps">840876307206130_1273445860615837</string>
-    <string name="fb_banner_ads_detail">840876307206130_840877100539384</string>
-    <string name="fb_interstitial_ads_detail">840876307206130_840877297206031</string>
-    <string name="fb_interstitial_ads_main">840876307206130_840877617205999</string>
-    <string name="fb_banner_ads_main">840876307206130_840877500539344</string>
+    <string name="google_banner_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/3504266868</string>
+    <string name="google_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/8894865352</string>
+    <string name="google_app_open_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/6268702012</string>
+    <string name="google_rewarded_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/7415161989</string>
+    <string name="google_rewarded_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/4540339790</string>
+    <string name="google_native_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/3227258126</string>
+
+    <string name="rating_bad">Bad</string>
+    <string name="rating_not_good">Not good</string>
+    <string name="rating_somewhat_good">Somewhat good</string>
+    <string name="rating_very_good">Very good</string>
+    <string name="rating_excellent">Excellent</string>
+    <string name="rate_instruction">Please rate our app</string>
+
+    <string name="update_available">Update Available</string>
+    <string name="update_desc">A new version of the app is available. Please update for the best experience.</string>
+    <string name="update_now">Update Now</string>
+    <string name="no_thanks">No Thanks</string>
+
+    <string name="turn_off_ads">Turn off ads (4 min)</string>
+    <string name="ads_off_title">Ads Disabled</string>
+    <string name="ads_off_msg">Ads are now off for 4 minutes. Enjoy your study session!</string>
 </resources>

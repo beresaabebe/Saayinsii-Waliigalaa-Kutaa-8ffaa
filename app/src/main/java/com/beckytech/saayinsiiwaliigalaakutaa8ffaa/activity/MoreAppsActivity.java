@@ -103,7 +103,7 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
         }
 
         // Show interstitial immediately on click for better conversion
-        AdManager.getInstance().showInterstitial();
+        AdManager.getInstance().showInterstitial(this);
         startActivity(intent);
     }
 }
