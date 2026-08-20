@@ -120,10 +120,9 @@ public class MoreAppsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         public void bindAd(Context context) {
-            adContainer.removeAllViews();
-            AdView adView = new AdView(context, context.getString(R.string.facebook_bottom_rectangle_more_apps), AdSize.RECTANGLE_HEIGHT_250);
-            adContainer.addView(adView);
-            adView.loadAd();
+            if (context instanceof android.app.Activity) {
+                AdManager.getInstance().initAdChain((android.app.Activity) context, adContainer);
+            }
         }
     }
 }

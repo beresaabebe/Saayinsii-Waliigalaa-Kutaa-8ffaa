@@ -125,11 +125,9 @@ public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (adContainer.getChildCount() == 0) {
 
                 // 2. We use the AdManager to handle the visibility and the load logic
-                // This ensures if ads are disabled, the container stays GONE.
-                AdManager.getInstance().initRectangle(
+                AdManager.getInstance().initAdChain(
                         activity,
-                        adContainer,
-                        itemView.getContext().getString(R.string.facebook_rectangle_upper_more_apps)
+                        adContainer
                 );
             }
         }

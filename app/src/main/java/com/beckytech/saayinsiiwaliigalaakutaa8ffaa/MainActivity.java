@@ -44,9 +44,6 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_main);
 
-        // Initialize Facebook SDK
-        AudienceNetworkAds.initialize(this);
-
         // Setup UI
         ToolbarAndNavigationBar();
         setupRecyclerView();
@@ -56,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         checkForUpdate();
 
         // Handle Ads via centralized AdManager
+        AdManager.getInstance().initSDKs(this);
         setupAds();
     }
 
@@ -76,16 +74,12 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
 
     private void setupAds() {
         if (AdManager.getInstance().areAdsEnabled(this)) {
-            // 1. Load Banner
+            // Load Ad Chain in main container
             LinearLayout adContainer = findViewById(R.id.banner_container);
-            AdManager.getInstance().initBanner(this, adContainer, getString(R.string.google_banner_ads_unit_id));
+            AdManager.getInstance().initAdChain(this, adContainer);
 
-            // 2. Load Rectangle
-            LinearLayout rectContainer = findViewById(R.id.banner_container_rectangle);
-            AdManager.getInstance().initRectangle(this, rectContainer, getString(R.string.google_native_ads_unit_id));
-
-            // 3. Load Interstitial
-            AdManager.getInstance().loadInterstitial(this, getString(R.string.google_interstitial_ads_unit_id));
+            // Load Interstitial
+            AdManager.getInstance().loadInterstitial(this, getString(R.string.fb_interstitial_ads_main));
         } else {
             // Hide containers if user recently turned off ads
             findViewById(R.id.banner_container).setVisibility(View.GONE);
@@ -158,9 +152,8 @@ public class MainActivity extends AppCompatActivity implements Adapter.OnItemCli
         } else if (id == R.id.action_exit) {
             showExitDialog();
         } else if (id == R.id.action_turn_off_ads) {
-            // This triggers the 4-minute timer and refreshes UI
+            // This triggers the 4-minute timer and refreshes UI after video
             AdManager.getInstance().turnOffAds(this);
-            setupAds(); // Call this to hide current ads immediately
         }
     }
 

@@ -12,8 +12,6 @@
     <string name="facebook">Facebook</string>
     <string name="phone">Phone</string>
     <string name="version">Version - </string>
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8504401574247581/1210255957</string>
-    <string name="interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/9558932534</string>
     <string name="kitaaba_kutaa_8ffaa">Kitaaba Kutaa 8ffaa</string>
     <string name="kitaaba_kutaa_7ffaa">Kitaaba Kutaa 7ffaa</string>
     <string name="kitaaba_gadaa">Kitaaba Gadaa</string>
@@ -39,13 +37,24 @@
     <string name="fb_interstitial_ads_detail" translatable="false">840876307206130_840877297206031</string>
     <string name="fb_interstitial_ads_main" translatable="false">840876307206130_840877617205999</string>
     <string name="fb_banner_ads_main" translatable="false">840876307206130_840877500539344</string>
+    <string name="fb_native_ads_id">840876307206130_1577169223576831</string>
+    <string name="fb_rewarded_interstitial_ads_id">840876307206130_1686930285934057</string>
 
-    <string name="google_banner_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/3504266868</string>
-    <string name="google_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/8894865352</string>
     <string name="google_app_open_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/6268702012</string>
-    <string name="google_rewarded_interstitial_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/7415161989</string>
-    <string name="google_rewarded_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/4540339790</string>
-    <string name="google_native_ads_unit_id" translatable="false">ca-app-pub-8504401574247581/3227258126</string>
+
+    <string name="vungle_app_id">6a8714b1ae7e7fc0a20add38</string>
+    <string name="vungle_interstitial_id">INTERSTITIAL-0320424</string>
+    <string name="vungle_rewarded_id">REWARDED-5161931</string>
+    <string name="vungle_app_open_id">APP_OPEN-9243894</string>
+    <string name="vungle_mrec_id">MREC-9339068</string>
+    <string name="vungle_banner_id">BANNER-5056077</string>
+    <string name="vungle_native_id">NATIVE-7935651</string>
+
+    <string name="unity_game_id">800005482</string>
+    <string name="unity_interstitial_ads_unit_id">Interstitial_Android</string>
+    <string name="unity_banner_ads_unit_id">Banner_Android</string>
+    <string name="unity_rewarded_ads_unit_id">Rewarded_Android</string>
+
 
     <string name="rating_bad">Bad</string>
     <string name="rating_not_good">Not good</string>
@@ -62,4 +71,8 @@
     <string name="turn_off_ads">Turn off ads (4 min)</string>
     <string name="ads_off_title">Ads Disabled</string>
     <string name="ads_off_msg">Ads are now off for 4 minutes. Enjoy your study session!</string>
+    <string name="watch_ad_to_disable">Watch a short video to disable all ads for 4 minutes?</string>
+    <string name="watch_ad_yes">Watch Video</string>
+    <string name="watch_ad_no">Maybe Later</string>
+    <string name="ad_not_ready">Ad is not ready yet. Please try again in a few seconds.</string>
 </resources>

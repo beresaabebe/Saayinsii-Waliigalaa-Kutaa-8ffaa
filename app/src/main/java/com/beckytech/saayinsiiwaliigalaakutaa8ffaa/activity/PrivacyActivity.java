@@ -30,9 +30,6 @@ public class PrivacyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy);
 
-        // Initialize SDK
-        AudienceNetworkAds.initialize(this);
-
         initUI();
         setupWebView();
         setupModernBackNavigation();
@@ -54,20 +51,12 @@ public class PrivacyActivity extends AppCompatActivity {
 
     private void setupAds() {
         if (AdManager.getInstance().areAdsEnabled(this)) {
-            // Load Bottom Banner
+            // Main Ad Chain
             LinearLayout bannerContainer = findViewById(R.id.banner_container);
-            AdManager.getInstance().initBanner(this, bannerContainer, getString(R.string.fb_banner_ads_detail));
-
-            // Load Medium Rectangle
-            LinearLayout rectangleContainer = findViewById(R.id.mrec_container);
-            if (rectangleContainer != null) {
-                AdManager.getInstance().initRectangle(this, rectangleContainer, getString(R.string.facebook_rectangle_upper_more_apps));
-            }
+            AdManager.getInstance().initAdChain(this, bannerContainer);
         } else {
             // Hide containers if ads are disabled
             findViewById(R.id.banner_container).setVisibility(View.GONE);
-            View mrec = findViewById(R.id.mrec_container);
-            if (mrec != null) mrec.setVisibility(View.GONE);
         }
     }
 

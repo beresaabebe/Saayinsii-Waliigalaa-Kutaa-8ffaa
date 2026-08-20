@@ -13,13 +13,19 @@ import com.beckytech.saayinsiiwaliigalaakutaa8ffaa.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.vungle.ads.AdConfig;
+import com.vungle.ads.BaseAd;
+import com.vungle.ads.InterstitialAd;
+import com.vungle.ads.InterstitialAdListener;
+import com.vungle.ads.VungleError;
 
 import java.util.Date;
 
 public class AppOpenManager implements Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
-    private AppOpenAd appOpenAd = null;
-    private AppOpenAd.AppOpenAdLoadCallback loadCallback;
+    private AppOpenAd googleAppOpenAd = null;
+    private InterstitialAd vungleAppOpenFallback = null;
+    
     private final Application myApplication;
     private Activity currentActivity;
     private static boolean isShowingAd = false;
@@ -36,26 +42,52 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, D
             return;
         }
 
-        loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+        AppOpenAd.load(
+                myApplication, myApplication.getString(R.string.google_app_open_ads_unit_id), new AdRequest.Builder().build(),
+                new AppOpenAd.AppOpenAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull AppOpenAd ad) {
+                        AppOpenManager.this.googleAppOpenAd = ad;
+                        AppOpenManager.this.loadTime = (new Date()).getTime();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        fetchVungleFallback();
+                    }
+                });
+    }
+
+    private void fetchVungleFallback() {
+        vungleAppOpenFallback = new InterstitialAd(myApplication, myApplication.getString(R.string.vungle_app_open_id), new AdConfig());
+        vungleAppOpenFallback.setAdListener(new InterstitialAdListener() {
             @Override
-            public void onAdLoaded(@NonNull AppOpenAd ad) {
-                AppOpenManager.this.appOpenAd = ad;
+            public void onAdLoaded(@NonNull BaseAd baseAd) {
                 AppOpenManager.this.loadTime = (new Date()).getTime();
             }
 
             @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error.
+            public void onAdFailedToLoad(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                vungleAppOpenFallback = null;
             }
-        };
-        AdRequest request = getAdRequest();
-        AppOpenAd.load(
-                myApplication, myApplication.getString(R.string.google_app_open_ads_unit_id), request,
-                loadCallback);
-    }
 
-    private AdRequest getAdRequest() {
-        return new AdRequest.Builder().build();
+            @Override
+            public void onAdFailedToPlay(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                vungleAppOpenFallback = null;
+            }
+
+            @Override
+            public void onAdClicked(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdLeftApplication(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdImpression(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdStart(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdEnd(@NonNull BaseAd baseAd) {}
+        });
+        vungleAppOpenFallback.load();
     }
 
     private boolean wasLoadTimeLessThanNHoursAgo() {
@@ -65,33 +97,74 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, D
     }
 
     public boolean isAdAvailable() {
-        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo();
+        return (googleAppOpenAd != null || (vungleAppOpenFallback != null && vungleAppOpenFallback.canPlayAd())) && wasLoadTimeLessThanNHoursAgo();
     }
 
     public void showAdIfAvailable() {
         if (!isShowingAd && isAdAvailable()) {
-            appOpenAd.setFullScreenContentCallback(new com.google.android.gms.ads.FullScreenContentCallback() {
-                @Override
-                public void onAdDismissedFullScreenContent() {
-                    appOpenAd = null;
-                    isShowingAd = false;
-                    fetchAd();
-                }
-
-                @Override
-                public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
-                    isShowingAd = false;
-                }
-
-                @Override
-                public void onAdShowedFullScreenContent() {
-                    isShowingAd = true;
-                }
-            });
-            appOpenAd.show(currentActivity);
+            if (googleAppOpenAd != null) {
+                showGoogleAppOpen();
+            } else if (vungleAppOpenFallback != null) {
+                showVungleFallback();
+            }
         } else {
             fetchAd();
         }
+    }
+
+    private void showGoogleAppOpen() {
+        googleAppOpenAd.setFullScreenContentCallback(new com.google.android.gms.ads.FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                googleAppOpenAd = null;
+                isShowingAd = false;
+                fetchAd();
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull com.google.android.gms.ads.AdError adError) {
+                isShowingAd = false;
+                fetchAd();
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                isShowingAd = true;
+            }
+        });
+        googleAppOpenAd.show(currentActivity);
+    }
+
+    private void showVungleFallback() {
+        vungleAppOpenFallback.setAdListener(new InterstitialAdListener() {
+            @Override
+            public void onAdLoaded(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdFailedToLoad(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {}
+            @Override
+            public void onAdFailedToPlay(@NonNull BaseAd baseAd, @NonNull VungleError vungleError) {
+                isShowingAd = false;
+                vungleAppOpenFallback = null;
+                fetchAd();
+            }
+            @Override
+            public void onAdClicked(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdLeftApplication(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdImpression(@NonNull BaseAd baseAd) {}
+            @Override
+            public void onAdStart(@NonNull BaseAd baseAd) {
+                isShowingAd = true;
+            }
+            @Override
+            public void onAdEnd(@NonNull BaseAd baseAd) {
+                vungleAppOpenFallback = null;
+                isShowingAd = false;
+                fetchAd();
+            }
+        });
+        vungleAppOpenFallback.play(currentActivity);
     }
 
     @Override

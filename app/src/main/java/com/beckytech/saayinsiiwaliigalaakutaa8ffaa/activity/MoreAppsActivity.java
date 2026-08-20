@@ -38,8 +38,6 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_apps);
 
-        AudienceNetworkAds.initialize(this);
-
         setupToolbar();
         setupRecyclerView();
         setupAds();
@@ -47,13 +45,9 @@ public class MoreAppsActivity extends AppCompatActivity implements MoreAppsAdapt
 
     private void setupAds() {
         if (AdManager.getInstance().areAdsEnabled(this)) {
-            // Upper Rectangle Ad
-            LinearLayout banner_container_rectangle = findViewById(R.id.banner_container_rectangle);
-            AdManager.getInstance().initRectangle(this, banner_container_rectangle, getString(R.string.facebook_rectangle_upper_more_apps));
-
-            // Bottom Banner
+            // Main Ad Chain
             LinearLayout banner_container = findViewById(R.id.banner_container);
-            AdManager.getInstance().initBanner(this, banner_container, getString(R.string.facebook_banner_height_50_more_apps));
+            AdManager.getInstance().initAdChain(this, banner_container);
 
             // Pre-load Interstitial
             AdManager.getInstance().loadInterstitial(this, getString(R.string.facebook_interstitial_more_apps));

@@ -57,21 +57,20 @@ public class BookDetailActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 updateToolbar(position);
-                AdManager.getInstance().showRandomRewardedAd(BookDetailActivity.this);
+                AdManager.getInstance().showRewardedAd(BookDetailActivity.this);
             }
         });
 
         // Load ads
-        AdManager.getInstance().loadInterstitial(this, getString(R.string.google_interstitial_ads_unit_id));
+        AdManager.getInstance().loadInterstitial(this, getString(R.string.fb_interstitial_ads_detail));
         AdManager.getInstance().loadRewardedAd(this);
-        AdManager.getInstance().loadRewardedInterstitialAd(this);
         
         loadBottomBanner();
     }
 
     private void loadBottomBanner() {
         android.widget.LinearLayout bannerContainer = findViewById(R.id.banner_container);
-        AdManager.getInstance().initCollapsibleBanner(this, bannerContainer, getString(R.string.google_banner_ads_unit_id));
+        AdManager.getInstance().initAdChain(this, bannerContainer);
     }
 
     private void initData() {

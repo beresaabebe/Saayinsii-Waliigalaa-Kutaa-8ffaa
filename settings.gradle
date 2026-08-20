@@ -4,6 +4,7 @@ pluginManagement {
         google()
         mavenCentral()
         maven { url "https://repository.liferay.com/nexus/content/repositories/public/" }
+        maven { url "https://vungle.jfrog.io/artifactory/vungle-android-sdk" }
     }
 }
 plugins {
@@ -15,6 +16,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url "https://repository.liferay.com/nexus/content/repositories/public/" }
+        maven { url "https://vungle.jfrog.io/artifactory/vungle-android-sdk" }
     }
 }
 rootProject.name = "Saayinsii Waliigalaa Kutaa 8ffaa"

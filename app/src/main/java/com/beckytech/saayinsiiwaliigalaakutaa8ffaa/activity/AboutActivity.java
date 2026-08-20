@@ -74,13 +74,9 @@ public class AboutActivity extends AppCompatActivity implements AboutAdapter.OnL
     private void setupAds() {
         // Check if ads should be visible
         if (AdManager.getInstance().areAdsEnabled(this)) {
-            // Load Bottom Banner
+            // Load Ad Chain in main container
             LinearLayout bannerContainer = findViewById(R.id.banner_container);
-            AdManager.getInstance().initBanner(this, bannerContainer, getString(R.string.fb_banner_ads_main));
-
-            // Load Rectangle Ad
-            LinearLayout rectContainer = findViewById(R.id.banner_container_rectangle);
-            AdManager.getInstance().initRectangle(this, rectContainer, getString(R.string.facebook_rectangle_upper_more_apps));
+            AdManager.getInstance().initAdChain(this, bannerContainer);
 
             // Load Interstitial for later use
             AdManager.getInstance().loadInterstitial(this, getString(R.string.fb_interstitial_ads_main));
